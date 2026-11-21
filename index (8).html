@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Состав и строение атмосферы · Облака</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f2ee;--ink:#0d0d0d;--mute:#6f6f69;--ik:#0033ff;--hot:#ff3b00;--font:'Inter','Helvetica Neue',Helvetica,Arial,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0;border-radius:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font)}
+#deck{display:flex;flex-direction:column;height:max-content;width:100vw;transition:transform .9s cubic-bezier(.76,0,.24,1)}
+.slide{flex:0 0 100vh;height:100vh;width:100vw;padding:4.5vh 5vw 8.5vh 7.5vw;display:flex;flex-direction:column;position:relative;overflow:hidden;background:var(--bg)}
+.slide.bl{background:var(--ik);color:#fff}
+.meta{display:flex;justify-content:space-between;font:500 clamp(10px,.78vw,13px)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding-bottom:1.3vh;border-bottom:1px solid currentColor;margin-bottom:3.2vh;position:relative;z-index:3;pointer-events:none}
+.meta span:first-child{opacity:.65}
+h1,h2{font-weight:200;letter-spacing:-.035em;line-height:1.02;position:relative;z-index:3;pointer-events:none}
+h2{font-size:min(4.6vw,8.4vh);margin-bottom:3vh}
+h2 em,h1 em{font-style:normal;color:var(--ik)}
+.bl h1 em,.bl h2 em{color:#fff;font-style:italic;font-weight:300}
+h3{font-weight:600;font-size:clamp(14px,1.25vw,21px);letter-spacing:-.01em}
+p{font-size:clamp(13px,1.2vw,20px);line-height:1.5;font-weight:400;max-width:48ch}
+.bl p{color:#fff}
+.k{font:500 clamp(9px,.74vw,12px)/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.bl .k{color:rgba(255,255,255,.75)}
+.cols{display:grid;grid-template-columns:5fr 7fr;gap:3vw;flex:1;min-height:0}
+.view{position:relative;border:1px solid var(--ink);background:radial-gradient(rgba(0,0,0,.2) 1px,transparent 1.6px) 0 0/22px 22px,#fafaf7;min-height:0;overflow:hidden}
+.view canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.view .k{position:absolute;left:1vw;bottom:1.2vh;pointer-events:none}
+.rows{border-bottom:1px solid var(--ink)}
+.row{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:2.6em 1fr auto;align-items:baseline;gap:.4em;width:100%;padding:1.15vh 0;border-top:1px solid var(--ink);font-size:clamp(14px,1.3vw,22px);font-weight:400;transition:.2s}
+.row .n{font:500 .6em var(--mono);color:var(--mute);letter-spacing:.1em}
+.row .v{font:500 .62em var(--mono);letter-spacing:.06em;color:var(--mute)}
+.row i{display:inline-block;width:.7em;height:.7em;margin-right:.6em;vertical-align:baseline}
+.row:hover{color:var(--ik);padding-left:.6vw}
+.row.on{background:var(--ink);color:#fff;padding-left:.8vw;padding-right:.8vw}
+.row.on .n,.row.on .v{color:rgba(255,255,255,.7)}
+.big{font-weight:200;letter-spacing:-.05em;line-height:.9;font-size:min(8vw,15vh)}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink);border-left:1px solid var(--ink);flex:1;min-height:0}
+.grid4>div{border-right:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:2.2vh 1.3vw;display:flex;flex-direction:column;justify-content:space-between}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--ink);border-left:1px solid var(--ink);flex:1;min-height:0}
+.grid5>div{border-right:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:1.6vh .9vw;display:flex;flex-direction:column;justify-content:space-between}
+.grid5 .ab{font-weight:200;font-size:min(5.4vw,10vh);letter-spacing:-.04em;line-height:1}
+.grid5 .fill{background:var(--ik);color:#fff}.grid5 .fill .k{color:rgba(255,255,255,.75)}
+.grid5 p{font-size:clamp(11px,.95vw,16px);line-height:1.3}
+.rise{opacity:0}
+.slide.on .rise{animation:wipe 1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes wipe{from{opacity:0;clip-path:inset(0 0 100% 0);transform:translateY(14px)}to{opacity:1;clip-path:inset(0 0 -20% 0);transform:none}}
+.draw{stroke-dasharray:1;stroke-dashoffset:1}
+.slide.on .draw{animation:draw 2.6s .5s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--ink);outline:none;margin:1.6vh 0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--ik);border:0;cursor:pointer}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;background:var(--ik);border:0;border-radius:0;cursor:pointer}
+#rail{position:fixed;left:2.4vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:1.4vh;z-index:9;pointer-events:none}
+#rail i{display:block;height:2px;width:12px;background:currentColor;opacity:.35;transition:.5s}
+#rail i.on{width:30px;opacity:1;background:var(--ik)}
+body.bl #rail{color:#fff}body.bl #rail i.on{background:#fff}
+#hint{position:fixed;right:5vw;bottom:3vh;font:500 clamp(10px,.78vw,13px) var(--mono);letter-spacing:.14em;text-transform:uppercase;z-index:9;color:var(--mute);pointer-events:none}
+body.bl #hint{color:rgba(255,255,255,.75)}
+#cv{position:absolute;right:0;top:0;width:62vw;height:100vh;cursor:grab;touch-action:none;z-index:1}
+.cover{position:relative;z-index:3;flex:1;display:flex;flex-direction:column;justify-content:center;pointer-events:none}
+@media (max-aspect-ratio:1/1){.slide{overflow-y:auto;padding-left:9vw}.cols{grid-template-columns:1fr}.view{height:50vh;flex:none}.grid4{grid-template-columns:1fr 1fr}.grid5{grid-template-columns:1fr 1fr}#cv{width:100vw;opacity:.5}h2{font-size:30px}p{font-size:15px}}
+</style>
+</head>
+<body class="bl">
+<main id="deck">
+
+<!-- 01 COVER -->
+<section class="slide bl">
+ <canvas id="cv"></canvas>
+ <div class="meta rise"><span>География · 2026</span><span>01 / 10</span></div>
+ <div class="cover">
+  <div class="k rise">Состав · Строение · Облака</div>
+  <h1 class="rise" style="font-size:min(11.5vw,19vh);margin:2vh 0 3vh">Атмо<em>сфера</em></h1>
+  <p class="rise" style="font-size:clamp(15px,1.7vw,29px);font-weight:300;max-width:26ch">Воздушная оболочка Земли и вода, которая в ней парит.</p>
+ </div>
+ <div class="rise" style="display:grid;grid-template-columns:repeat(3,1fr);gap:2vw;max-width:50vw;position:relative;z-index:3;border-top:1px solid #fff;padding-top:1.6vh">
+  <div><div class="k">Азот</div><div style="font-size:min(2.6vw,5vh);font-weight:300">78 %</div></div>
+  <div><div class="k">Кислород</div><div style="font-size:min(2.6vw,5vh);font-weight:300">21 %</div></div>
+  <div><div class="k">Тропосфера</div><div style="font-size:min(2.6vw,5vh);font-weight:300">0–12 км</div></div>
+ </div>
+</section>
+
+<!-- 02 COMPOSITION -->
+<section class="slide">
+ <div class="meta rise"><span>Часть I · Состав</span><span>02 / 10</span></div>
+ <h2 class="rise">1000 молекул <em>воздуха</em></h2>
+ <div class="cols">
+  <div style="display:flex;flex-direction:column;justify-content:space-between">
+   <div class="rows rise" id="lg">
+    <button class="row" data-g="0"><span class="n">N₂</span><span><i style="background:#bdbdb6"></i>Азот</span><span class="v"><span data-n="78.08" data-d="2">0</span> %</span></button>
+    <button class="row" data-g="1"><span class="n">O₂</span><span><i style="background:#0033ff"></i>Кислород</span><span class="v"><span data-n="20.95" data-d="2">0</span> %</span></button>
+    <button class="row" data-g="2"><span class="n">Ar</span><span><i style="background:#0d0d0d"></i>Аргон</span><span class="v"><span data-n="0.93" data-d="2">0</span> %</span></button>
+    <button class="row" data-g="3"><span class="n">CO₂</span><span><i style="background:#ff3b00"></i>Углекислый газ и прочие</span><span class="v">≈ <span data-n="0.04" data-d="2">0</span> %</span></button>
+   </div>
+   <p class="rise">Каждый квадрат — 1 молекула из тысячи. Нажми на газ, чтобы найти его. Оранжевая частица одна: углекислого газа очень мало, но он управляет климатом.</p>
+  </div>
+  <div class="view rise"><canvas id="c2"></canvas><span class="k">Тяни, чтобы вращать</span></div>
+ </div>
+</section>
+
+<!-- 03 MINOR GASES -->
+<section class="slide">
+ <div class="meta rise"><span>Часть I · Состав</span><span>03 / 10</span></div>
+ <h2 class="rise">Малое, но <em>решающее</em></h2>
+ <div class="grid4 rise">
+  <div><div class="k">Водяной пар · H₂O</div><div class="big"><span data-n="4" data-d="0">0</span><span style="font-size:.4em"> % макс.</span></div><div><h3>Источник облаков</h3><p>От 0 до 4 %: больше всего над тёплым океаном, меньше всего в пустыне и у полюсов.</p></div></div>
+  <div><div class="k">Углекислый газ · CO₂</div><div class="big"><span data-n="0.042" data-d="3">0</span><span style="font-size:.4em"> %</span></div><div><h3>Тепло и фотосинтез</h3><p>Около 420 частиц на миллион. Удерживает тепло планеты и кормит растения.</p></div></div>
+  <div><div class="k">Озон · O₃</div><div class="big">≤<span data-n="10" data-d="0">0</span><span style="font-size:.4em"> ppm</span></div><div><h3>Щит от ультрафиолета</h3><p>Сосредоточен в стратосфере на высоте 20–30 км и поглощает почти весь жёсткий УФ.</p></div></div>
+  <div><div class="k">Пыль и аэрозоли</div><div class="big">10<span style="font-size:.4em"> мкм</span></div><div><h3>Ядра облаков</h3><p>Соль, дым, пыльца и пыль — на них оседает пар. Без аэрозолей не было бы капель.</p></div></div>
+ </div>
+</section>
+
+<!-- 04 LAYERS 3D -->
+<section class="slide" id="s4">
+ <div class="meta rise"><span>Часть I · Строение · 3D</span><span>04 / 10</span></div>
+ <h2 class="rise">Пять <em>этажей</em> неба</h2>
+ <div class="cols" style="grid-template-columns:5fr 7fr">
+  <div style="display:flex;flex-direction:column;gap:2vh;justify-content:space-between">
+   <div class="rows rise" id="ly">
+    <button class="row" data-l="4"><span class="n">05</span><span>Экзосфера</span><span class="v">800+ км</span></button>
+    <button class="row" data-l="3"><span class="n">04</span><span>Термосфера</span><span class="v">85–800 км</span></button>
+    <button class="row" data-l="2"><span class="n">03</span><span>Мезосфера</span><span class="v">50–85 км</span></button>
+    <button class="row" data-l="1"><span class="n">02</span><span>Стратосфера</span><span class="v">12–50 км</span></button>
+    <button class="row" data-l="0"><span class="n">01</span><span>Тропосфера</span><span class="v">0–12 км</span></button>
+   </div>
+   <div class="rise" style="border-left:3px solid var(--ik);padding-left:1.2vw">
+    <div class="k" id="lh">Выбери слой</div>
+    <div style="font-size:min(2.6vw,5vh);font-weight:300;letter-spacing:-.02em;margin:.5vh 0" id="ln">Атмосфера</div>
+    <div class="k" id="lt" style="color:var(--ik)">Температура: от +15 °C до +1500 °C</div>
+    <p id="lf" style="margin-top:1vh;font-size:clamp(12px,1.05vw,18px)">Нажми на слой или вращай модель. Высоты показаны не в масштабе; точки — плотность воздуха.</p>
+   </div>
+  </div>
+  <div class="view rise"><canvas id="c3"></canvas><span class="k">Тяни, чтобы вращать · Не в масштабе</span></div>
+ </div>
+</section>
+
+<!-- 05 TEMPERATURE -->
+<section class="slide">
+ <div class="meta rise"><span>Часть I · Строение</span><span>05 / 10</span></div>
+ <h2 class="rise">Температура идёт <em>зигзагом</em></h2>
+ <div class="cols" style="grid-template-columns:7fr 5fr">
+  <div class="rise" style="border:1px solid var(--ink);padding:1.4vh 1vw;background:#fafaf7">
+   <svg viewBox="0 0 640 490" style="width:100%;height:100%;display:block">
+    <g stroke="#0d0d0d" stroke-width=".7" stroke-dasharray="3 4" opacity=".5"><path d="M70 408H610M70 275H610M70 152H610"/></g>
+    <path d="M340 30V450" stroke="#0033ff" stroke-width="1" stroke-dasharray="2 4"/>
+    <path d="M70 30V450H610" fill="none" stroke="#0d0d0d" stroke-width="1.2"/>
+    <g font-family="JetBrains Mono,monospace" font-size="10" fill="#6f6f69"><text x="64" y="454" text-anchor="end">0</text><text x="64" y="412" text-anchor="end">12</text><text x="64" y="279" text-anchor="end">50</text><text x="64" y="156" text-anchor="end">85</text><text x="64" y="34" text-anchor="end">120 км</text>
+     <text x="70" y="472" text-anchor="middle">−100</text><text x="205" y="472" text-anchor="middle">−50</text><text x="340" y="472" text-anchor="middle" fill="#0033ff">0 °C</text><text x="475" y="472" text-anchor="middle">+50</text><text x="610" y="472" text-anchor="middle">+100</text></g>
+    <g font-family="Inter,sans-serif" font-size="13" font-weight="500" fill="#0d0d0d" text-anchor="end"><text x="604" y="432">ТРОПОСФЕРА</text><text x="604" y="346">СТРАТОСФЕРА</text><text x="604" y="218">МЕЗОСФЕРА</text><text x="604" y="100">ТЕРМОСФЕРА</text></g>
+    <path class="draw" pathLength="1" d="M380.5 450L188.8 411.5L188.8 380L334.6 275L334.6 257.5L97 149L97 135L151 100L259 65L569.5 30" fill="none" stroke="#0033ff" stroke-width="3.2" stroke-linejoin="miter"/>
+    <g fill="#0d0d0d"><rect x="376" y="446" width="9" height="9"/><rect x="184" y="407" width="9" height="9"/><rect x="330" y="253" width="9" height="9"/><rect x="92" y="131" width="9" height="9"/></g>
+   </svg>
+  </div>
+  <div style="display:flex;flex-direction:column;justify-content:space-between">
+   <div class="rows rise">
+    <div class="row" style="cursor:default"><span class="n">0 км</span><span>Земля</span><span class="v">+15 °C</span></div>
+    <div class="row" style="cursor:default"><span class="n">11 км</span><span>Тропопауза</span><span class="v">−56 °C</span></div>
+    <div class="row" style="cursor:default"><span class="n">50 км</span><span>Озон греет воздух</span><span class="v">≈ 0 °C</span></div>
+    <div class="row" style="cursor:default"><span class="n">85 км</span><span>Самое холодное место</span><span class="v">−90 °C</span></div>
+   </div>
+   <div class="rise"><div class="big" style="color:var(--ik)"><span data-n="99" data-d="0">0</span>%</div><p style="margin-top:1vh">всей массы воздуха лежит ниже 32 км. Половина — ниже 5,5 км: поэтому на Эвересте трудно дышать.</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 06 CLOUDS CHAPTER -->
+<section class="slide bl">
+ <div class="meta rise"><span>Часть II · Облака</span><span>06 / 10</span></div>
+ <div style="flex:1;display:grid;grid-template-columns:1.3fr 1fr;gap:4vw;align-items:center">
+  <h1 class="rise" style="font-size:min(12.5vw,21vh)">Об<em>лака</em></h1>
+  <div style="display:flex;flex-direction:column;gap:4vh">
+   <div class="rise" style="border-top:1px solid #fff;padding-top:1.4vh"><div class="big" style="font-size:min(6.4vw,12vh)"><span data-n="0.01" data-d="2">0</span> мм</div><p style="margin-top:1vh">размер капли в облаке. В кубометре облака их сотни миллионов.</p></div>
+   <div class="rise" style="border-top:1px solid #fff;padding-top:1.4vh"><div class="big" style="font-size:min(6.4vw,12vh)">500 т</div><p style="margin-top:1vh">весит обычное кучевое облако — и не падает.</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 07 CONDENSATION 3D -->
+<section class="slide" id="s7">
+ <div class="meta rise"><span>Часть II · Облака · 3D</span><span>07 / 10</span></div>
+ <h2 class="rise">Как пар становится <em>облаком</em></h2>
+ <div class="cols">
+  <div style="display:flex;flex-direction:column;justify-content:space-between">
+   <div class="rows rise">
+    <div class="row" style="cursor:default"><span class="n">01</span><span>Нагрев и подъём</span><span class="v">пар вверх</span></div>
+    <div class="row" style="cursor:default"><span class="n">02</span><span>Остывание ≈ −10 °C/км</span><span class="v">до точки росы</span></div>
+    <div class="row" style="cursor:default"><span class="n">03</span><span>Конденсация</span><span class="v">капли</span></div>
+    <div class="row" style="cursor:default"><span class="n">04</span><span>Капли крупнеют</span><span class="v">осадки</span></div>
+   </div>
+   <div class="rise"><div class="k">Нагрев земли: <span id="hv" style="color:var(--ik)">60</span> %</div><input type="range" id="hr" min="0" max="100" value="60">
+    <div style="display:flex;gap:2vw;margin-top:1vh"><span class="k"><b style="display:inline-block;width:.8em;height:.8em;background:#9a9a94;margin-right:.5em"></b>Пар</span><span class="k"><b style="display:inline-block;width:.8em;height:.8em;background:#0033ff;margin-right:.5em"></b>Капли</span></div></div>
+  </div>
+  <div class="view rise"><canvas id="c4"></canvas><span class="k">Двигай ползунок и вращай</span></div>
+ </div>
+</section>
+
+<!-- 08 CLASSIFICATION -->
+<section class="slide">
+ <div class="meta rise"><span>Часть II · Облака</span><span>08 / 10</span></div>
+ <h2 class="rise">Десять <em>родов</em> облаков</h2>
+ <div class="grid5 rise">
+  <div><span class="k">6–12 км · лёд</span><div class="ab">Ci</div><div><h3>Перистые</h3><p>Тонкие белые нити</p></div></div>
+  <div><span class="k">6–12 км · лёд</span><div class="ab">Cc</div><div><h3>Перисто-кучевые</h3><p>Мелкие «барашки»</p></div></div>
+  <div><span class="k">6–12 км · лёд</span><div class="ab">Cs</div><div><h3>Перисто-слоистые</h3><p>Молочная пелена, гало</p></div></div>
+  <div><span class="k">2–6 км</span><div class="ab">Ac</div><div><h3>Высококучевые</h3><p>Волны и ряды пятен</p></div></div>
+  <div><span class="k">2–6 км</span><div class="ab">As</div><div><h3>Высокослоистые</h3><p>Солнце как через матовое стекло</p></div></div>
+  <div><span class="k">до 2 км</span><div class="ab">St</div><div><h3>Слоистые</h3><p>Серое одеяло, морось</p></div></div>
+  <div><span class="k">до 2 км</span><div class="ab">Sc</div><div><h3>Слоисто-кучевые</h3><p>Серые валы</p></div></div>
+  <div><span class="k">до 2 км</span><div class="ab">Ns</div><div><h3>Слоисто-дождевые</h3><p>Затяжной дождь или снег</p></div></div>
+  <div><span class="k">0,5–2 км</span><div class="ab">Cu</div><div><h3>Кучевые</h3><p>«Вата» хорошей погоды</p></div></div>
+  <div class="fill"><span class="k">до 12 км</span><div class="ab">Cb</div><div><h3>Кучево-дождевые</h3><p>Гроза, град, шквал</p></div></div>
+ </div>
+</section>
+
+<!-- 09 ROLE -->
+<section class="slide">
+ <div class="meta rise"><span>Часть II · Облака</span><span>09 / 10</span></div>
+ <h2 class="rise">Зачем планете <em>облака</em></h2>
+ <div class="grid4 rise" style="grid-template-columns:repeat(3,1fr)">
+  <div><div class="k">Покрытие</div><div class="big">≈<span data-n="67" data-d="0">0</span>%</div><div><h3>Две трети планеты</h3><p>Облаками закрыта большая часть поверхности Земли в любой момент.</p></div></div>
+  <div><div class="k">Тепло</div><div class="big">≈<span data-n="30" data-d="0">0</span>%</div><div><h3>Щит и одеяло</h3><p>Земля отражает около 30 % солнечного света, заметную долю — облака. Ночью они удерживают тепло.</p></div></div>
+  <div><div class="k">Вода</div><div class="big"><span data-n="505" data-d="0">0</span><span style="font-size:.38em"> тыс. км³</span></div><div><h3>Осадки за год</h3><p>Столько воды выпадает на Землю. Каждая капля сначала побывала в облаке.</p></div></div>
+ </div>
+</section>
+
+<!-- 10 END -->
+<section class="slide bl">
+ <div class="meta rise"><span>Итоги</span><span>10 / 10</span></div>
+ <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+  <h1 class="rise" style="font-size:min(7.2vw,14vh);max-width:16ch">Тонкая плёнка, <em>которая решает всё</em></h1>
+  <p class="rise" style="font-size:clamp(15px,1.7vw,29px);font-weight:300;margin-top:3vh;max-width:36ch">99 % воздуха уместились в первых 32 км — это меньше 0,5 % радиуса Земли.</p>
+ </div>
+ <div class="rise" style="display:grid;grid-template-columns:repeat(3,1fr);gap:2vw;border-top:1px solid #fff;padding-top:1.6vh;position:relative;z-index:3">
+  <div><div class="k">Состав</div><p style="font-size:clamp(12px,1.1vw,18px)">N₂ 78 %, O₂ 21 %, остальное — следы.</p></div>
+  <div><div class="k">Строение</div><p style="font-size:clamp(12px,1.1vw,18px)">Пять слоёв; погода — только в нижнем.</p></div>
+  <div><div class="k">Облака</div><p style="font-size:clamp(12px,1.1vw,18px)">Пар остыл до точки росы — и стал каплями.</p></div>
+ </div>
+</section>
+
+</main>
+<div id="rail"></div><div id="hint">↑ ↓</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+ function rnd(a,b){return a+Math.random()*(b-a)}
+ var slidesEl=[].slice.call(document.querySelectorAll('.slide')),scenes=[];
+ function make(canvas,slideEl,o){
+  var S={slide:slideEl,cam:{az:o.az||0,el:o.el||.4,dist:o.dist||10,tx:0,ty:o.ty||0,tz:0},update:function(){}};
+  S.cur=JSON.parse(JSON.stringify(S.cam));
+  S.renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true});
+  S.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  S.scene=new THREE.Scene();S.camera=new THREE.PerspectiveCamera(o.fov||42,1,.1,300);
+  S.size=function(){var w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;S.renderer.setSize(w,h,false);S.camera.aspect=w/h;S.camera.updateProjectionMatrix()};
+  if(window.ResizeObserver)new ResizeObserver(S.size).observe(canvas);S.size();
+  var dn=false,lx=0,ly=0;
+  canvas.addEventListener('pointerdown',function(e){dn=true;lx=e.clientX;ly=e.clientY;canvas.setPointerCapture(e.pointerId)});
+  canvas.addEventListener('pointerup',function(){dn=false});
+  canvas.addEventListener('pointermove',function(e){if(!dn)return;S.cam.az-=(e.clientX-lx)*.008;S.cam.el=Math.max(.02,Math.min(1.45,S.cam.el+(e.clientY-ly)*.006));lx=e.clientX;ly=e.clientY});
+  scenes.push(S);return S;
+ }
+ function place(S){var c=S.cur,d=S.cam;for(var q in d)c[q]+=(d[q]-c[q])*.07;var ce=Math.cos(c.el);
+  S.camera.position.set(c.tx+c.dist*Math.sin(c.az)*ce,c.ty+c.dist*Math.sin(c.el),c.tz+c.dist*Math.cos(c.az)*ce);S.camera.lookAt(c.tx,c.ty,c.tz)}
+ function pts(a){return a}
+ function circ(r,seg){var p=[];for(var k=0;k<=seg;k++){var a=k/seg*Math.PI*2;p.push(new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r))}return p}
+ function line(p,color,op){return new THREE.Line(new THREE.BufferGeometry().setFromPoints(p),new THREE.LineBasicMaterial({color:color,transparent:true,opacity:op}))}
+ function sprite(txt,color,x,y,z,w,h){var c=document.createElement('canvas');c.width=512;c.height=64;var g=c.getContext('2d');g.fillStyle=color;g.font='500 30px monospace';g.fillText(txt,6,42);
+  var s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));s.position.set(x,y,z);s.scale.set(w,h,1);return s}
+ var FL,FC,FH;
+ try{
+ /* ===== A: cover globe with density ===== */
+ (function(){
+  var S=make(document.getElementById('cv'),slidesEl[0],{el:.3,dist:5.4,fov:40});
+  var tilt=new THREE.Group(),G=new THREE.Group();tilt.rotation.z=.41;tilt.add(G);S.scene.add(tilt);
+  G.add(new THREE.Mesh(new THREE.SphereGeometry(.99,48,32),new THREE.MeshBasicMaterial({color:0x001a85})));
+  for(var la=-60;la<=60;la+=30){var c=line(circ(Math.cos(la*Math.PI/180),72),0xffffff,.55);c.position.y=Math.sin(la*Math.PI/180);G.add(c)}
+  for(var m=0;m<6;m++){var p=[];for(var k=0;k<=72;k++){var a=k/72*Math.PI*2;p.push(new THREE.Vector3(Math.cos(a),Math.sin(a),0))}var l=line(p,0xffffff,.5);l.rotation.y=m*Math.PI/6;G.add(l)}
+  [1.08,1.22,1.45,1.8,2.3].forEach(function(r,i){
+   var op=.7-i*.11;
+   var e=line(circ(r,96),0xffffff,op);G.add(e);
+   var p1=[];for(var k=0;k<=96;k++){var a=k/96*Math.PI*2;p1.push(new THREE.Vector3(Math.cos(a)*r,Math.sin(a)*r,0))}G.add(line(p1,0xffffff,op));
+   var p2=p1.map(function(v){return new THREE.Vector3(0,v.y,v.x)});G.add(line(p2,0xffffff,op*.8));
+  });
+  var n=9000,pos=new Float32Array(n*3);
+  for(var i=0;i<n;i++){var u=Math.random(),r=1.02+(-Math.log(1-u))*.14;if(r>2.35)r=1.02+Math.random()*.2;
+   var th=Math.acos(rnd(-1,1)),ph=rnd(0,6.283);pos[i*3]=r*Math.sin(th)*Math.cos(ph);pos[i*3+1]=r*Math.cos(th);pos[i*3+2]=r*Math.sin(th)*Math.sin(ph)}
+  var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  G.add(new THREE.Points(g,new THREE.PointsMaterial({size:.034,color:0xffffff,transparent:true,opacity:.9})));
+  S.update=function(t,dt){G.rotation.y+=dt*.22}
+ })();
+
+ /* ===== B: composition cube ===== */
+ FC=(function(){
+  var S=make(document.getElementById('c2'),slidesEl[1],{az:.7,el:.4,dist:13,ty:0,fov:40});
+  var NX=10,sp=.6,idx=[],i,j,k;for(i=0;i<1000;i++)idx.push(i);
+  for(i=999;i>0;i--){j=Math.floor(Math.random()*(i+1));var tmp=idx[i];idx[i]=idx[j];idx[j]=tmp}
+  var cnt=[781,209,9,1],colors=[0xbdbdb6,0x0033ff,0x0d0d0d,0xff3b00],sizes=[.3,.3,.34,.5],meshes=[],base=[],off=0;
+  var geo=new THREE.BoxGeometry(1,1,1),dummy=new THREE.Object3D();
+  for(var g=0;g<4;g++){
+   var m=new THREE.InstancedMesh(geo,new THREE.MeshBasicMaterial({color:colors[g],transparent:true}),cnt[g]);
+   m.userData={g:g,list:[]};
+   for(i=0;i<cnt[g];i++){var id=idx[off+i],x=id%NX,y=Math.floor(id/NX)%NX,z=Math.floor(id/(NX*NX));
+    m.userData.list.push([(x-4.5)*sp,(y-4.5)*sp,(z-4.5)*sp,rnd(0,6.28)])}
+   off+=cnt[g];S.scene.add(m);meshes.push(m)}
+  var box=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(6.3,6.3,6.3)),new THREE.LineBasicMaterial({color:0x0d0d0d,transparent:true,opacity:.6}));S.scene.add(box);
+  var sel=-1;
+  S.update=function(t,dt){
+   for(var g=0;g<4;g++){var m=meshes[g],L=m.userData.list,s=sizes[g];
+    if(sel>=0&&g===sel)s*=1.5;
+    for(var i=0;i<L.length;i++){var p=L[i];dummy.position.set(p[0]+Math.sin(t*1.3+p[3])*.07,p[1]+Math.cos(t*1.1+p[3]*1.7)*.07,p[2]+Math.sin(t*.9+p[3]*2.1)*.07);dummy.scale.setScalar(s);dummy.updateMatrix();m.setMatrixAt(i,dummy.matrix)}
+    m.instanceMatrix.needsUpdate=true;
+    var dim=sel>=0&&g!==sel;m.material.opacity+=((dim?.12:1)-m.material.opacity)*.15;
+   }
+   S.cam.az+=dt*.08;
+  };
+  return {set:function(g){sel=(sel===g)?-1:g;return sel}};
+ })();
+
+ /* ===== C: atmosphere layers ===== */
+ FL=(function(){
+  var S=make(document.getElementById('c3'),slidesEl[3],{az:.6,el:.28,dist:19,ty:5,fov:40});
+  var H=[1.3,2.1,1.7,2.6,2.2],D=[1700,800,300,140,60],names=['ТРОПОСФЕРА','СТРАТОСФЕРА','МЕЗОСФЕРА','ТЕРМОСФЕРА','ЭКЗОСФЕРА'],base=[.9,.62,.42,.26,.14],mats=[],mid=[],y=0,R=2.5;
+  var grid=new THREE.GridHelper(9,18,0x0d0d0d,0x0d0d0d);grid.material.transparent=true;grid.material.opacity=.18;grid.position.y=-.05;S.scene.add(grid);
+  for(var l=0;l<5;l++){
+   var h=H[l],mt=new THREE.MeshBasicMaterial({color:0x0033ff,transparent:true,opacity:base[l],depthWrite:false});mats.push(mt);
+   var cy=new THREE.Mesh(new THREE.CylinderGeometry(R,R,h,6,1),mt);cy.position.y=y+h/2;S.scene.add(cy);
+   var ed=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.CylinderGeometry(R,R,h,6,1)),new THREE.LineBasicMaterial({color:0x0d0d0d}));ed.position.y=y+h/2;S.scene.add(ed);
+   var n=D[l],p=new Float32Array(n*3);
+   for(var i=0;i<n;i++){var a=rnd(0,6.283),r=Math.sqrt(Math.random())*(R-.2);p[i*3]=r*Math.cos(a);p[i*3+1]=y+rnd(.05,h-.05);p[i*3+2]=r*Math.sin(a)}
+   var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(p,3));
+   S.scene.add(new THREE.Points(g,new THREE.PointsMaterial({size:.1,color:0x0d0d0d})));
+   S.scene.add(sprite(names[l],'#0d0d0d',R+2.0,y+h/2,0,4.4,.55));
+   mid.push(y+h/2);y+=h+.06;
+  }
+  var sel=-1;
+  S.update=function(t,dt){
+   for(var l=0;l<5;l++){var tg=sel<0?base[l]:(l===sel?.75:.06);mats[l].opacity+=(tg-mats[l].opacity)*.12;mats[l].color.setHex(sel===l?0xff3b00:0x0033ff)}
+   if(sel<0)S.cam.az+=dt*.07;
+  };
+  return {set:function(l){sel=l;if(l<0){S.cam.ty=5;S.cam.dist=19}else{S.cam.ty=mid[l];S.cam.dist=11}}};
+ })();
+
+ /* ===== D: condensation ===== */
+ FH=(function(){
+  var S=make(document.getElementById('c4'),slidesEl[6],{az:.6,el:.28,dist:14,ty:2.7,fov:42});
+  var g0=new THREE.GridHelper(8,16,0x0d0d0d,0x0d0d0d);g0.material.transparent=true;g0.material.opacity=.3;S.scene.add(g0);
+  var sq=[new THREE.Vector3(-4,3.2,-4),new THREE.Vector3(4,3.2,-4),new THREE.Vector3(4,3.2,4),new THREE.Vector3(-4,3.2,4),new THREE.Vector3(-4,3.2,-4)];
+  var lv=new THREE.Line(new THREE.BufferGeometry().setFromPoints(sq),new THREE.LineDashedMaterial({color:0x0033ff,dashSize:.25,gapSize:.15}));lv.computeLineDistances();S.scene.add(lv);
+  S.scene.add(sprite('УРОВЕНЬ КОНДЕНСАЦИИ · 2 КМ','#0033ff',-1.6,3.55,4.3,5.2,.65));
+  S.scene.add(sprite('ЗЕМЛЯ · +25 °C','#0d0d0d',-2.6,.3,4.3,3.6,.5));
+  var n=2400,X=[],Y=[],Z=[],VY=[],PH=[],ST=[],LF=[],CE=[],pos=new Float32Array(n*3),col=new Float32Array(n*3),heat=.6;
+  var gray=new THREE.Color(0x9a9a94),blue=new THREE.Color(0x0033ff);
+  function reset(i,init){X[i]=rnd(-3.8,3.8);Z[i]=rnd(-3.8,3.8);Y[i]=0;VY[i]=rnd(.7,1.3);PH[i]=rnd(0,6.28);ST[i]=0;CE[i]=rnd(3.8,5.2);LF[i]=rnd(4,12);
+   if(init){var r=Math.random();if(r<.4){ST[i]=1;Y[i]=CE[i];X[i]*=.6;Z[i]*=.6;LF[i]=rnd(1,10)}else Y[i]=rnd(0,3.1)}}
+  for(var i=0;i<n;i++)reset(i,true);
+  var geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+  S.scene.add(new THREE.Points(geo,new THREE.PointsMaterial({size:.13,vertexColors:true})));
+  S.update=function(t,dt){
+   var act=Math.floor(n*(.1+.9*heat));
+   for(var i=0;i<n;i++){
+    var s=ST[i],o=i*3,c=gray;
+    if(s===0){
+     if(i>=act){pos[o+1]=-100;continue}
+     Y[i]+=dt*VY[i]*(.25+1.7*heat);X[i]+=Math.sin(t*.8+PH[i])*.25*dt;
+     if(Y[i]>3.2)ST[i]=1;
+    }else if(s===1){
+     c=blue;X[i]-=X[i]*.12*dt;Z[i]-=Z[i]*.12*dt;
+     if(Y[i]<CE[i])Y[i]+=dt*.45;else Y[i]=CE[i]+Math.sin(t+PH[i])*.06;
+     X[i]+=Math.sin(t*.5+PH[i])*.2*dt;LF[i]-=dt;if(LF[i]<0)ST[i]=2;
+    }else{c=blue;Y[i]-=dt*5;if(Y[i]<0)reset(i,false)}
+    pos[o]=X[i];pos[o+1]=Y[i];pos[o+2]=Z[i];col[o]=c.r;col[o+1]=c.g;col[o+2]=c.b;
+   }
+   geo.attributes.position.needsUpdate=true;geo.attributes.color.needsUpdate=true;
+  };
+  return {heat:function(v){heat=v}};
+ })();
+ }catch(err){console.warn('3D off',err);document.querySelectorAll('canvas').forEach(function(c){c.style.display='none'})}
+
+ /* ===== UI ===== */
+ document.getElementById('lg').addEventListener('click',function(e){var b=e.target.closest('.row');if(!b||!FC)return;var s=FC.set(+b.dataset.g);[].forEach.call(this.children,function(x){x.classList.toggle('on',s>=0&&+x.dataset.g===s)})});
+ var LAY=[['Тропосфера','0–12 км · у полюсов 8, у экватора 18','Температура: +15 → −56 °C','Около 80 % массы воздуха и почти весь водяной пар. Здесь живут погода, облака и мы.'],
+  ['Стратосфера','12–50 км','Температура: −56 → 0 °C','Озоновый слой на высоте 20–30 км греет воздух и защищает от ультрафиолета. Облаков почти нет.'],
+  ['Мезосфера','50–85 км','Температура: 0 → −90 °C','Самый холодный слой. Здесь сгорает большинство метеоров — «падающие звёзды».'],
+  ['Термосфера','85–800 км','Температура: до +1500 °C','Воздух почти пуст, поэтому «жарко» лишь формально. Здесь полярные сияния и МКС (≈400 км).'],
+  ['Экзосфера','800–10 000 км','Постепенный переход в космос','Последний рубеж: лёгкие атомы водорода и гелия улетают в космос.']];
+ document.getElementById('ly').addEventListener('click',function(e){var b=e.target.closest('.row');if(!b)return;var l=+b.dataset.l,was=b.classList.contains('on');
+  [].forEach.call(this.children,function(x){x.classList.remove('on')});
+  if(was){if(FL)FL.set(-1);document.getElementById('lh').textContent='Выбери слой';document.getElementById('ln').textContent='Атмосфера';document.getElementById('lt').textContent='Температура: от +15 °C до +1500 °C';document.getElementById('lf').textContent='Нажми на слой или вращай модель. Высоты показаны не в масштабе; точки — плотность воздуха.';return}
+  b.classList.add('on');if(FL)FL.set(l);var d=LAY[l];document.getElementById('ln').textContent=d[0];document.getElementById('lh').textContent=d[1];document.getElementById('lt').textContent=d[2];document.getElementById('lf').textContent=d[3]});
+ var hr=document.getElementById('hr');hr.addEventListener('input',function(){document.getElementById('hv').textContent=hr.value;if(FH)FH.heat(hr.value/100)});
+
+ /* ===== loop ===== */
+ var last=performance.now(),T0=last;
+ function loop(now){var dt=Math.min(.05,(now-last)/1000);last=now;var t=(now-T0)/1000;
+  for(var k=0;k<scenes.length;k++){var S=scenes[k];if(!S.slide.classList.contains('on'))continue;S.update(t,dt);place(S);S.renderer.render(S.scene,S.camera)}
+  requestAnimationFrame(loop)}
+ requestAnimationFrame(loop);
+
+ /* ===== deck ===== */
+ var deck=document.getElementById('deck'),N=slidesEl.length,i=0,lock=false,rail=document.getElementById('rail');
+ for(var q=0;q<N;q++)rail.appendChild(document.createElement('i'));
+ function count(s){[].forEach.call(s.querySelectorAll('[data-n]'),function(e){var T=parseFloat(e.dataset.n),d=+e.dataset.d,t0=performance.now();
+  (function f(now){var p=Math.min(1,(now-t0)/1500),v=T*(1-Math.pow(1-p,3));e.textContent=v.toFixed(d).replace('.',',');if(p<1)requestAnimationFrame(f)})(t0)})}
+ function go(n){
+  i=Math.max(0,Math.min(N-1,n));deck.style.transform='translateY('+(-i*100)+'vh)';
+  slidesEl.forEach(function(s,k){
+   if(k===i){var r=s.querySelectorAll('.rise');for(var j=0;j<r.length;j++)r[j].style.animationDelay=(j*.08+.35)+'s';s.classList.add('on');setTimeout(function(){count(s)},350)}
+   else(function(s){setTimeout(function(){if(slidesEl[i]!==s)s.classList.remove('on')},1000)})(s)});
+  [].forEach.call(rail.children,function(x,k){x.classList.toggle('on',k===i)});
+  document.body.classList.toggle('bl',slidesEl[i].classList.contains('bl'));
+  if(history.replaceState)history.replaceState(null,'','#'+(i+1));
+ }
+ function nav(d){if(lock)return;lock=true;go(i+d);setTimeout(function(){lock=false},900)}
+ document.addEventListener('keydown',function(e){
+  if(['ArrowDown','ArrowRight','PageDown',' '].indexOf(e.key)>-1){e.preventDefault();nav(1)}
+  else if(['ArrowUp','ArrowLeft','PageUp'].indexOf(e.key)>-1){e.preventDefault();nav(-1)}
+  else if(e.key==='Home')go(0);else if(e.key==='End')go(N-1)});
+ document.addEventListener('wheel',function(e){var s=slidesEl[i];if(s.scrollHeight>s.clientHeight+4)return;if(Math.abs(e.deltaY)>25)nav(e.deltaY>0?1:-1)},{passive:true});
+ var ty0=0,tx0=0,skip=false;
+ document.addEventListener('touchstart',function(e){skip=!!e.target.closest('canvas,input');tx0=e.touches[0].clientX;ty0=e.touches[0].clientY},{passive:true});
+ document.addEventListener('touchend',function(e){if(skip)return;var dy=e.changedTouches[0].clientY-ty0,dx=e.changedTouches[0].clientX-tx0;if(Math.abs(dy)>50&&Math.abs(dy)>Math.abs(dx))nav(dy<0?1:-1)},{passive:true});
+ var h=parseInt(location.hash.slice(1),10);deck.style.transition='none';go(h>0?h-1:0);setTimeout(function(){deck.style.transition=''},80);
+})();
+</script>
+</body>
+</html>
